@@ -1,6 +1,28 @@
 version: '3.4'
 
 services:
+  Onlineretailerwebapi:
+    image: ${DOCKER_REGISTRY-}onlineretailerwebapi
+    ports: 
+    - "8100:80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    build:
+      context: .
+      dockerfile: OnlineRetailer.WebApi/Dockerfile
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+
+  grafana:
+    image: grafana/grafana
+    ports:
+    - "3000:3000"
+
   seq:
     image: datalust/seq
     ports: 
