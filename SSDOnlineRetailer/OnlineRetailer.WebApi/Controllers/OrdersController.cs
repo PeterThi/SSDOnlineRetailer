@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using Monitoring;
 using OnlineRetailer.Core;
 using OnlineRetailer.Core.Entities;
 using OnlineRetailer.Core.Interfaces;
@@ -46,13 +47,16 @@ namespace OnlineRetailer.WebApi.Controllers
         {
             if (order == null)
             {
+                MonitoringService.Log.Verbose("failed, ");
                 return BadRequest();
             }
             if (!orderManager.CreateOrder(order))
             {
+                MonitoringService.Log.Verbose("failed, ");
                 return BadRequest("Order creation failed.");
             }
 
+            MonitoringService.Log.Verbose("new order posted, " + order.TotalPrice);
             return CreatedAtRoute("GetOrder", new { id = order.Id }, order);
         }
 

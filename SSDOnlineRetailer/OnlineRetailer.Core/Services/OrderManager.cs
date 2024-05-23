@@ -17,7 +17,7 @@ namespace OnlineRetailer.Core.Services
         {
             if (order == null)
             {
-                MonitoringService.Log.Debug("null order registered");
+                MonitoringService.Log.Error("null order found");
                 throw new ArgumentNullException(nameof(order));
                 
             }

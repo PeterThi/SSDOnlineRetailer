@@ -21,7 +21,7 @@ namespace Monitoring
 
                 .MinimumLevel.Verbose()
                 .WriteTo.Console()
-                .WriteTo.Seq("http://seq")
+                .WriteTo.Seq("http://localhost:5341")
                 .CreateLogger();
 
             Log.Debug("Started Logger in MonitorService");
