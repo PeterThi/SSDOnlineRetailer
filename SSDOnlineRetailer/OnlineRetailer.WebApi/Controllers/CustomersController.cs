@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using OnlineRetailer.Core;
 using OnlineRetailer.Core.Entities;
-
+using OnlineRetailer.CredentialsHandler;
 
 namespace OnlineRetailer.WebApi.Controllers
 {
@@ -22,6 +22,23 @@ namespace OnlineRetailer.WebApi.Controllers
         public IEnumerable<Customer> Get()
         {
             return repository.GetAll();
+        }
+
+        [HttpPut]
+
+        public void UpdatePassword(int id, string password)
+        {
+            string passwordHash = PasswordHelper.HashPassword(password);
+            Customer customerToUpdate = repository.Get(id);
+            customerToUpdate.hashedPassword = passwordHash;
+
+            repository.Edit(customerToUpdate);
+        }
+
+        [HttpGet("{id}, {password}")]
+        public bool validateUser(int id, string password) 
+        {
+            return PasswordHelper.ValidateCustomer(id, password, repository);
         }
 
     }

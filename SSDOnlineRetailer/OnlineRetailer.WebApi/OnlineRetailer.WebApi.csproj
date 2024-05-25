@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\OnlineRetailer.Core\OnlineRetailer.Core.csproj" />
+    <ProjectReference Include="..\OnlineRetailer.CredentialsHandler\OnlineRetailer.CredentialsHandler.csproj" />
     <ProjectReference Include="..\OnlineRetailer.Infrastructure\OnlineRetailer.Infrastructure.csproj" />
   </ItemGroup>
 

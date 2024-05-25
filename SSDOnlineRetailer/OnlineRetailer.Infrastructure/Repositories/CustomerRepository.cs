@@ -24,6 +24,7 @@ namespace OnlineRetailer.Infrastructure.Repositories
         public void Edit(Customer entity)
         {
             db.Entry(entity).State = EntityState.Modified;
+            db.SaveChanges();
         }
 
         public Customer Get(int id)

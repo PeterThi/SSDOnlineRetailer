@@ -28,8 +28,8 @@ namespace OnlineRetailer.Infrastructure
 
             List<Customer> customers = new List<Customer>
             {
-                new Customer { Name="John Smith", Email="js@gmail.com", Balance = 5 },
-                new Customer { Name="Jane Doe", Email="jd@gmail.com", Balance = 500 }
+                new Customer { Name="John Smith", Email="js@gmail.com", Balance = 5, hashedPassword = "dsankx23" },
+                new Customer { Name="Jane Doe", Email="jd@gmail.com", Balance = 500, hashedPassword = "s123raxd" }
             };
 
             List<Product> rooms = new List<Product>

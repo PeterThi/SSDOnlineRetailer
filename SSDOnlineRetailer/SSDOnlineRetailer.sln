@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34607.119
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary1", "ClassLibrary1\ClassLibrary1.csproj", "{8D5271DF-B4C4-4252-8F61-04BEDFFA395E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassLibrary1", "ClassLibrary1\ClassLibrary1.csproj", "{8D5271DF-B4C4-4252-8F61-04BEDFFA395E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineRetailer.Core", "OnlineRetailer.Core\OnlineRetailer.Core.csproj", "{E3324FB2-8FBC-40B6-BEB0-1524EB260A24}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monitoring", "Monitoring\Monitoring.csproj", "{711B85DC-773E-485F-8268-26B29D5C6CC5}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{4528120D-C82F-42E8-A838-3D5DCE4180D8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineRetailer.CredentialsHandler", "OnlineRetailer.CredentialsHandler\OnlineRetailer.CredentialsHandler.csproj", "{D0C770C4-C1F8-4953-900A-BE3E563D6E72}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{4528120D-C82F-42E8-A838-3D5DCE4180D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4528120D-C82F-42E8-A838-3D5DCE4180D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4528120D-C82F-42E8-A838-3D5DCE4180D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0C770C4-C1F8-4953-900A-BE3E563D6E72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0C770C4-C1F8-4953-900A-BE3E563D6E72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0C770C4-C1F8-4953-900A-BE3E563D6E72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0C770C4-C1F8-4953-900A-BE3E563D6E72}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
