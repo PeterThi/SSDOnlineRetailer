@@ -11,10 +11,11 @@ namespace OnlineRetailer.WebApi.Controllers
     public class CustomersController : Controller
     {
         private readonly IRepository<Customer> repository;
-
-        public CustomersController(IRepository<Customer> repos)
+        private LoginThrottler loginThrottler;
+        public CustomersController(IRepository<Customer> repos, LoginThrottler loginThrottler)
         {
             repository = repos;
+            this.loginThrottler = loginThrottler;
         }
 
         // GET: customers
@@ -36,9 +37,29 @@ namespace OnlineRetailer.WebApi.Controllers
         }
 
         [HttpGet("{id}, {password}")]
-        public bool validateUser(int id, string password) 
+        public IActionResult validateUser(int id, string password) 
         {
-            return PasswordHelper.ValidateCustomer(id, password, repository);
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+
+            if (loginThrottler.IsBlocked(ip)){
+                Console.WriteLine("is blocked");
+                return StatusCode(429, "This IP Has too many recent login attempts. Try again later");
+                
+            }
+
+            bool isUserValid = PasswordHelper.ValidateCustomer(id, password, repository);
+
+            if (isUserValid)
+            {
+                loginThrottler.RegisterAttempt(ip, true);
+
+                return Ok("You have logged in");
+            }
+            else
+            {
+                loginThrottler.RegisterAttempt(ip,false);
+                return Unauthorized("Invalid credentials");
+            }
         }
 
     }

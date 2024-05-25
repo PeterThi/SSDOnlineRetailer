@@ -4,6 +4,7 @@ using OnlineRetailer.Core;
 using OnlineRetailer.Core.Entities;
 using OnlineRetailer.Core.Interfaces;
 using OnlineRetailer.Core.Services;
+using OnlineRetailer.CredentialsHandler;
 using OnlineRetailer.Infrastructure;
 using OnlineRetailer.Infrastructure.Repositories;
 using Prometheus;
@@ -24,7 +25,6 @@ namespace OnlineRetailer.WebApi
             builder.Services.AddScoped<IRepository<Customer>, CustomerRepository>();
             builder.Services.AddScoped<IRepository<Order>, OrderRepository>();
             builder.Services.AddScoped<IOrderManager, OrderManager>();
-
             builder.Services.AddTransient<IDbInitializer, DbInitializer>();
 
             builder.Services.AddControllers();
@@ -32,6 +32,13 @@ namespace OnlineRetailer.WebApi
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddSingleton<LoginThrottler>(provider =>
+            {
+                var maxAttempts = 5;
+                var lockoutPeriod = TimeSpan.FromMinutes(5);
+
+                return new LoginThrottler(maxAttempts, lockoutPeriod);
+            });
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
