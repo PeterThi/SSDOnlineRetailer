@@ -17,7 +17,17 @@ services:
       - "9090:9090"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
-
+      - ./alert_rules.yml:/etc/prometheus/alert_rules.yml:ro
+ 
+  alertmanager:
+    image: prom/alertmanager
+    volumes:
+      - ./alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+    ports:
+      - "9093:9093"
+  
   grafana:
     image: grafana/grafana
     ports:

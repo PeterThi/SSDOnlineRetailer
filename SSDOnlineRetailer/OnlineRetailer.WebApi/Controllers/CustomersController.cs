@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using OnlineRetailer.Core;
 using OnlineRetailer.Core.Entities;
 using OnlineRetailer.CredentialsHandler;
-
+using Monitoring;
 namespace OnlineRetailer.WebApi.Controllers
 {
     [ApiController]
@@ -43,6 +43,7 @@ namespace OnlineRetailer.WebApi.Controllers
 
             if (loginThrottler.IsBlocked(ip)){
                 Console.WriteLine("is blocked");
+                MonitoringService.Log.Warning("Following ip was blocked for too many attempts:" + ip);
                 return StatusCode(429, "This IP Has too many recent login attempts. Try again later");
                 
             }
