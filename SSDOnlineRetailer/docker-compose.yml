@@ -10,6 +10,8 @@ services:
     build:
       context: .
       dockerfile: OnlineRetailer.WebApi/Dockerfile
+    depends_on:
+      - seq
 
   prometheus:
     image: prom/prometheus
@@ -18,7 +20,7 @@ services:
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - ./alert_rules.yml:/etc/prometheus/alert_rules.yml:ro
- 
+
   alertmanager:
     image: prom/alertmanager
     volumes:
@@ -28,10 +30,7 @@ services:
     ports:
       - "9093:9093"
   
-  grafana:
-    image: grafana/grafana
-    ports:
-    - "3000:3000"
+
 
   seq:
     image: datalust/seq

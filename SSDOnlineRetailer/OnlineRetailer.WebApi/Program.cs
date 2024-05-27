@@ -8,6 +8,14 @@ using OnlineRetailer.CredentialsHandler;
 using OnlineRetailer.Infrastructure;
 using OnlineRetailer.Infrastructure.Repositories;
 using Prometheus;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Monitoring;
 namespace OnlineRetailer.WebApi
 {
     public class Program
@@ -39,8 +47,35 @@ namespace OnlineRetailer.WebApi
 
                 return new LoginThrottler(maxAttempts, lockoutPeriod);
             });
+
+            /*//auth
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = "yourIssuer",
+                        ValidAudience = "yourAudience",
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("yourSecretKey"))
+                    };
+                });
+
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Account/Login";
+                    options.AccessDeniedPath = "/Account/AccessDenied";
+                });*/
+
+
             var app = builder.Build();
 
+            //app.UseAuthentication();
+            //app.UseAuthorization();
             // Configure the HTTP request pipeline.
 
             // Configure the HTTP request pipeline.

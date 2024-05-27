@@ -1,33 +1,12 @@
 groups:
-  - name: docker-alerts
+  - name: example
     rules:
-      - alert: DockerContainerHTTPRequestsHigh
-        expr: sum(rate(http_requests_total{container_label_com_docker_swarm_service_name=""}[5m])) by (container) > 10
-        for: 2m
+      - alert: HighErrorRate
+        expr: |
+          job:request_latency_seconds:mean5m{job="myjob"} > 0.5
+        for: 5m
         labels:
           severity: warning
         annotations:
-          summary: "High number of HTTP requests on Docker container"
-          description: "The Docker container has received more than 10 HTTP requests in the last 2 minutes."
-
-  - name: example
-    rules:
-      - alert: TestAlert
-        expr: 1 == 1
-        for: 1m
-        labels:
-          severity: critical
-        annotations:
-          summary: "Test alert"
-          description: "This is a test alert."
-
-  - name: possibleDDoS
-    rules:
-      - alert: DDosAttackDetected
-        expr: rate(http_requests_total[1m]) > 1000
-        for: 1m
-        labels:
-          severity: critical
-        annotations:
-          summary: "Possible DDoS attack detected"
-          description: "High rate of HTTP requests indicating a potential DDoS attack."
+          summary: "High error rate detected"
+          description: "The request latency is above the threshold of 0.5 seconds for 5 minutes."

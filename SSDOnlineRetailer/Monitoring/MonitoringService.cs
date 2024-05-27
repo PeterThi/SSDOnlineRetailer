@@ -3,6 +3,7 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
 using Serilog.Core;
+using Serilog.Sinks.Seq;
 using System.Diagnostics;
 using System.Reflection;
 namespace Monitoring
@@ -21,7 +22,7 @@ namespace Monitoring
 
                 .MinimumLevel.Verbose()
                 .WriteTo.Console()
-                .WriteTo.Seq("http://localhost:5341")
+                .WriteTo.Seq("http://seq")
                 .CreateLogger();
 
             Log.Debug("Started Logger in MonitorService");
