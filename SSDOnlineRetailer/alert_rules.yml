@@ -20,3 +20,14 @@ groups:
         annotations:
           summary: "Test alert"
           description: "This is a test alert."
+
+  - name: possibleDDoS
+    rules:
+      - alert: DDosAttackDetected
+        expr: rate(http_requests_total[1m]) > 1000
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Possible DDoS attack detected"
+          description: "High rate of HTTP requests indicating a potential DDoS attack."

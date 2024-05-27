@@ -29,9 +29,16 @@ namespace OnlineRetailer.Core.Services
 
                 decimal totalCost = CalculateTotalCost(order);
 
+                if (totalCost >= 0 )
+                {
+                    MonitoringService.Log.Error("Inappropriate order found with cost >= 0 with order id: " + order.Id);
+                }
+
                 if (customer.Balance < totalCost)
                 {
+                    MonitoringService.Log.Error("User with inelligble balance tried to order with id: " + order.Id);
                     return false;
+
                 }
 
                 UpdateProductStocks(order);

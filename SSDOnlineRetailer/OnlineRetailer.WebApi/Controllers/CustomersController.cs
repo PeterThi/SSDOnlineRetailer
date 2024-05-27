@@ -22,7 +22,9 @@ namespace OnlineRetailer.WebApi.Controllers
         [HttpGet]
         public IEnumerable<Customer> Get()
         {
+            MonitoringService.Log.Verbose("Following ip just recieved a list of all customers" + HttpContext.Connection.RemoteIpAddress.ToString());
             return repository.GetAll();
+            
         }
 
         [HttpPut]

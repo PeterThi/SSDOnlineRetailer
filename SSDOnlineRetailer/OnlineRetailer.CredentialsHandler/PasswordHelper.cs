@@ -3,6 +3,7 @@ using System.Collections;
 using System.Security.Cryptography;
 using OnlineRetailer.Infrastructure;
 using OnlineRetailer.Core;
+using Monitoring;
 namespace OnlineRetailer.CredentialsHandler
 {
     public class PasswordHelper
@@ -48,7 +49,6 @@ namespace OnlineRetailer.CredentialsHandler
         {
             this.maxAttempts = maxAttempts;
             this.lockoutPeriod = lockoutPeriod;
-            Console.WriteLine("New throttler made in cons");
         }
 
         public bool IsBlocked(string ip)
@@ -56,16 +56,20 @@ namespace OnlineRetailer.CredentialsHandler
             Console.WriteLine("ip is attempting" + ip);
             if (trackingDict.TryGetValue(ip, out TrackingStruct trackStruct)) //if the ip is blocked, return true
             {
-                Console.WriteLine("found ip");
                 if (trackStruct.attempts >= maxAttempts && DateTime.Now - trackStruct.lastAttempt < lockoutPeriod)
                 {
+                    MonitoringService.Log.Warning("Following banned IP trying to log in:" + ip);
                     Console.WriteLine("true, should be blocked", trackStruct.attempts, trackStruct.attempts >= maxAttempts, DateTime.Now - trackStruct.lastAttempt < lockoutPeriod);
                     return true;
                 }
                 if (DateTime.Now -  trackStruct.lastAttempt >= lockoutPeriod)
                 {
-                    Console.WriteLine("False, updating attempts", trackStruct.attempts, trackStruct.attempts >= maxAttempts, DateTime.Now - trackStruct.lastAttempt < lockoutPeriod);
+                    
                     trackingDict[ip] = new TrackingStruct { attempts = trackStruct.attempts, lastAttempt = DateTime.Now};
+                    if (trackStruct.attempts >= maxAttempts)
+                    {
+                        MonitoringService.Log.Warning("Following ip was just banned for too many attempts" + ip);
+                    }
                 }
                 
             }
@@ -78,15 +82,11 @@ namespace OnlineRetailer.CredentialsHandler
             if (isSuccesfull)
             {
                 trackingDict.Remove(ip);
-                Console.WriteLine("Successful, removed");
+                MonitoringService.Log.Verbose("following ip succesfully logged in:" + ip);
             }
             else
             {
-                foreach (var tracking in trackingDict.Keys)
-                {
-                    Console.WriteLine("inside1");
-                    Console.WriteLine(tracking.ToString() + "BEFORE ADDING");
-                }
+
                 Console.WriteLine(trackingDict.TryGetValue(ip, out TrackingStruct trackingStructd));
                 if (trackingDict.TryGetValue(ip, out TrackingStruct trackingStruct))
                 {
@@ -95,13 +95,9 @@ namespace OnlineRetailer.CredentialsHandler
                 }
                 else
                 {
+                    MonitoringService.Log.Verbose("New ip registered trying to log in" + ip);
                     trackingDict[ip] = new TrackingStruct { attempts = 1, lastAttempt = DateTime.Now };
-                    Console.WriteLine("Added new");
-                    foreach (var tracking in trackingDict.Keys)
-                    {
-                        Console.WriteLine("inside");
-                        Console.WriteLine (tracking.ToString() + "AFTER ADDING");
-                    }
+                    
                 }
                 
             }

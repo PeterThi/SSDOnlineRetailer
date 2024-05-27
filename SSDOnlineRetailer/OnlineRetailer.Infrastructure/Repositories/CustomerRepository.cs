@@ -4,7 +4,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using OnlineRetailer.Core;
 using OnlineRetailer.Infrastructure;
-
+using Monitoring;
 namespace OnlineRetailer.Infrastructure.Repositories
 {
     public class CustomerRepository : IRepository<Customer>
@@ -35,6 +35,7 @@ namespace OnlineRetailer.Infrastructure.Repositories
 
         public IEnumerable<Customer> GetAll()
         {
+            MonitoringService.Log.Verbose("All customer data was retrieved at" + DateTime.Now.ToString());
             return db.Customer.ToList();
         }
 
