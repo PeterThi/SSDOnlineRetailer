@@ -12,6 +12,8 @@ namespace OnlineRetailer.WebApi.Controllers
     {
         private readonly IRepository<Customer> repository;
         private LoginThrottler loginThrottler;
+
+        private List<char> bannedChars = new List<char> { '\'', '-', '.', ';', '*', '"' };
         public CustomersController(IRepository<Customer> repos, LoginThrottler loginThrottler)
         {
             repository = repos;
@@ -31,36 +33,69 @@ namespace OnlineRetailer.WebApi.Controllers
 
         public void UpdatePassword(int id, string password)
         {
-            string passwordHash = PasswordHelper.HashPassword(password);
-            Customer customerToUpdate = repository.Get(id);
-            customerToUpdate.hashedPassword = passwordHash;
+            bool foundSuspicousChar = false;
+            foreach (char c in bannedChars)
+            {
+                if (password.Contains(c))
+                {
+                    MonitoringService.Log.Warning("Following ip just tried to use a banned character in password" + HttpContext.Connection.RemoteIpAddress.ToString());
+                    foundSuspicousChar = true;
+                    break;
+                }
+            }
+            if (!foundSuspicousChar)
+            {
+                string passwordHash = PasswordHelper.HashPassword(password);
+                Customer customerToUpdate = repository.Get(id);
+                customerToUpdate.hashedPassword = passwordHash;
 
-            repository.Edit(customerToUpdate);
+                repository.Edit(customerToUpdate);
+            }
+
         }
 
         [HttpGet("{id}, {password}")]
         public IActionResult validateUser(int id, string password) 
         {
-            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
-
-            if (loginThrottler.IsBlocked(ip)){
-                Console.WriteLine("is blocked");
-                MonitoringService.Log.Warning("Following ip was blocked for too many attempts:" + ip);
-                return StatusCode(429, "This IP Has too many recent login attempts. Try again later");
-                
+            bool foundSuspicousChar = false;
+            foreach (char c in bannedChars)
+            {
+                if (password.Contains(c))
+                {
+                    MonitoringService.Log.Warning("Following ip just tried to use a banned character in password" + HttpContext.Connection.RemoteIpAddress.ToString());
+                    foundSuspicousChar = true;
+                    return Unauthorized("Invalid credentials");
+                }
             }
 
-            bool isUserValid = PasswordHelper.ValidateCustomer(id, password, repository);
-
-            if (isUserValid)
+            if (!foundSuspicousChar)
             {
-                loginThrottler.RegisterAttempt(ip, true);
+                var ip = HttpContext.Connection.RemoteIpAddress.ToString();
 
-                return Ok("You have logged in");
+                if (loginThrottler.IsBlocked(ip))
+                {
+                    Console.WriteLine("is blocked");
+                    MonitoringService.Log.Warning("Following ip was blocked for too many attempts:" + ip);
+                    return StatusCode(429, "This IP Has too many recent login attempts. Try again later");
+
+                }
+
+                bool isUserValid = PasswordHelper.ValidateCustomer(id, password, repository);
+
+                if (isUserValid)
+                {
+                    loginThrottler.RegisterAttempt(ip, true);
+
+                    return Ok("You have logged in");
+                }
+                else
+                {
+                    loginThrottler.RegisterAttempt(ip, false);
+                    return Unauthorized("Invalid credentials");
+                }
             }
             else
-            {
-                loginThrottler.RegisterAttempt(ip,false);
+            { //suspicious character found
                 return Unauthorized("Invalid credentials");
             }
         }

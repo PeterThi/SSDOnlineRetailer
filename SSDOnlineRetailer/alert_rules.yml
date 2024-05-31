@@ -10,3 +10,43 @@ groups:
         annotations:
           summary: "High error rate detected"
           description: "The request latency is above the threshold of 0.5 seconds for 5 minutes."
+  - name: DDoSCheck
+    rules:
+      - alert: HighHttpRequests
+        expr: sum(rate(http_requests_received_total[1m])) > 20
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High number of HTTP requests"
+          description: "The total number of HTTP requests per minute is above 20. Might indicate spammed requests"
+  - name: MemoryHigh
+    rules:
+      - alert: HighPrivateMemoryUsage
+        expr: process_private_memory_bytes > 500000000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High private memory usage detected"
+          description: "The private memory usage of the api has exceeded 500MB for more than 5 minutes."
+  - name: ThreadsHigh
+    rules:
+      - alert: HighNumberOfThreads
+        expr: process_num_threads > 200
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High number of threads detected"
+          description: "The number of cpu threads exceeded 200 for more than 2 minutes."
+  - name: ContainerDown
+    rules:
+      - alert: ServiceDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Service down detected"
+          description: "The service is down, send help."

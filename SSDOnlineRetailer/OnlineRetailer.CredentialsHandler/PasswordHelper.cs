@@ -53,7 +53,6 @@ namespace OnlineRetailer.CredentialsHandler
 
         public bool IsBlocked(string ip)
         {
-            Console.WriteLine("ip is attempting" + ip);
             if (trackingDict.TryGetValue(ip, out TrackingStruct trackStruct)) //if the ip is blocked, return true
             {
                 if (trackStruct.attempts >= maxAttempts && DateTime.Now - trackStruct.lastAttempt < lockoutPeriod)
@@ -101,6 +100,15 @@ namespace OnlineRetailer.CredentialsHandler
                 }
                 
             }
+        }
+
+        public void unbanIp(string ip)
+        {
+            if (trackingDict.ContainsKey(ip))
+            {
+                trackingDict.Remove(ip);
+            }
+            
         }
     }
 

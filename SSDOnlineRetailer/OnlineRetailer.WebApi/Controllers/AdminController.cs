@@ -12,10 +12,11 @@ namespace OnlineRetailer.WebApi.Controllers
     public class AdminController : Controller
     {
         private readonly IRepository<Customer> repository;
-
-        public AdminController(IRepository<Customer> repos)
+        private LoginThrottler loginThrottler;
+        public AdminController(IRepository<Customer> repos, LoginThrottler loginThrottler)
         {
             repository = repos;
+            this.loginThrottler = loginThrottler;
         }
 
         // GET: customers
@@ -25,6 +26,11 @@ namespace OnlineRetailer.WebApi.Controllers
             MonitoringService.Log.Verbose("Following ip just recieved a list of all customers" + HttpContext.Connection.RemoteIpAddress.ToString());
             return repository.GetAll();
 
+        }
+
+        [HttpPatch]
+        public void Patch(string ip) {
+            loginThrottler.unbanIp(ip);
         }
     }
 }
