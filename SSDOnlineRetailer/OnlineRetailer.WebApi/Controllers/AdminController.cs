@@ -21,11 +21,20 @@ namespace OnlineRetailer.WebApi.Controllers
 
         // GET: customers
         [HttpGet]
-        public IEnumerable<Customer> Get()
+        //[Authorize]
+        public IActionResult Get()
         {
-            MonitoringService.Log.Verbose("Following ip just recieved a list of all customers" + HttpContext.Connection.RemoteIpAddress.ToString());
-            return repository.GetAll();
-
+            if (User.IsInRole("Admin"))
+            {
+                MonitoringService.Log.Verbose("Following ip just recieved a list of all customers" + HttpContext.Connection.RemoteIpAddress.ToString());
+                return Ok();
+            }
+            else
+            {
+                MonitoringService.Log.Warning("Following ip just tried an admin action " + HttpContext.Connection.RemoteIpAddress.ToString());
+                return Unauthorized("Admins only");
+            }
+            
         }
 
         [HttpPatch]

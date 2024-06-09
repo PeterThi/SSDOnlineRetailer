@@ -31,7 +31,7 @@ namespace OnlineRetailer.WebApi.Controllers
 
         [HttpPut]
 
-        public void UpdatePassword(int id, string password)
+        public IActionResult UpdatePassword(int id, string password)
         {
             bool foundSuspicousChar = false;
             foreach (char c in bannedChars)
@@ -40,7 +40,7 @@ namespace OnlineRetailer.WebApi.Controllers
                 {
                     MonitoringService.Log.Warning("Following ip just tried to use a banned character in password" + HttpContext.Connection.RemoteIpAddress.ToString());
                     foundSuspicousChar = true;
-                    break;
+                    return Unauthorized("Invalid characters used");
                 }
             }
             if (!foundSuspicousChar)
@@ -50,7 +50,9 @@ namespace OnlineRetailer.WebApi.Controllers
                 customerToUpdate.hashedPassword = passwordHash;
 
                 repository.Edit(customerToUpdate);
+                return Ok();
             }
+            return Ok();
 
         }
 

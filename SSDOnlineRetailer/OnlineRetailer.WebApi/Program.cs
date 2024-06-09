@@ -48,7 +48,7 @@ namespace OnlineRetailer.WebApi
                 return new LoginThrottler(maxAttempts, lockoutPeriod);
             });
 
-            /*//auth
+            //auth
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -69,13 +69,18 @@ namespace OnlineRetailer.WebApi
                 {
                     options.LoginPath = "/Account/Login";
                     options.AccessDeniedPath = "/Account/AccessDenied";
-                });*/
+                });
+
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+            });
 
 
             var app = builder.Build();
 
-            //app.UseAuthentication();
-            //app.UseAuthorization();
+            app.UseAuthentication();
+            app.UseAuthorization();
             // Configure the HTTP request pipeline.
 
             // Configure the HTTP request pipeline.
